@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Viral Scraper</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#a78bfa"/>
+        </svg>
+      </div>
+      <span class="app-name">Viral Scraper</span>
+    </div>
+    <div class="header-right">
+      <div class="status-pill" id="statusPill">Not on site</div>
+    </div>
+  </div>
+
+  <!-- PLATFORM TABS -->
+  <div class="platform-bar" id="platformBar" style="display:none">
+    <button class="plat-btn active" id="platIG">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+      Instagram
+    </button>
+    <button class="plat-btn" id="platTT">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.31 6.31 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.77a8.16 8.16 0 004.77 1.52V7.82a4.85 4.85 0 01-1-.13z"/></svg>
+      TikTok
+    </button>
+    <button class="plat-btn" id="platTH">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 12.3c-.3.48-.71.86-1.22 1.13-.51.27-1.12.4-1.83.4-1.12 0-2.02-.38-2.69-1.13-.67-.75-1.01-1.86-1.01-3.32v-.39c0-1.46.33-2.58 1.01-3.33.67-.75 1.57-1.13 2.69-1.13.71 0 1.32.13 1.83.4.51.27.92.65 1.22 1.13.3.48.45 1.05.45 1.72h-1.92c0-.36-.08-.65-.24-.86-.16-.21-.4-.32-.71-.32-.4 0-.69.17-.87.52-.18.35-.27.9-.27 1.64v.39c0 .74.09 1.29.27 1.64.18.35.47.52.87.52.31 0 .55-.11.71-.32.16-.21.24-.5.24-.86h1.92c0 .67-.15 1.24-.45 1.72z"/></svg>
+      Threads
+    </button>
+  </div>
+
+  <!-- ZERO STATE -->
+  <div id="viewZero" class="view">
+    <div class="zero">
+      <div class="zero-icon">⚡</div>
+      <p class="zero-title">Open a profile to start</p>
+      <p class="zero-sub">Navigate to any Instagram, TikTok, or Threads profile page, then click Scan.</p>
+      <div class="zero-btns">
+        <button class="btn-plat-ig" id="goIG">Open Instagram</button>
+        <button class="btn-plat-tt" id="goTT">Open TikTok</button>
+        <button class="btn-plat-th" id="goTH">Open Threads</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN VIEW -->
+  <div id="viewMain" class="view" style="display:none">
+
+    <!-- Profile banner -->
+    <div class="profile-bar" id="profileBar" style="display:none">
+      <div class="profile-ava" id="profileAva"></div>
+      <div>
+        <div class="profile-handle" id="profileHandle">@—</div>
+        <div class="profile-sub" id="profileSub">Profile detected</div>
+      </div>
+    </div>
+
+    <!-- SCAN CONTROLS -->
+    <div class="card">
+      <div class="card-label">Scan Options</div>
+      <div class="ctrl-grid">
+        <div class="ctrl">
+          <div class="ctrl-label">Posts to scan</div>
+          <select id="selCount" class="sel">
+            <option value="25">25 posts</option>
+            <option value="50">50 posts</option>
+            <option value="100">100 posts</option>
+            <option value="200">200 posts</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-label">Sort results by</div>
+          <select id="selSortBy" class="sel">
+            <option value="likes">Likes</option>
+            <option value="views">Views</option>
+            <option value="comments">Comments</option>
+            <option value="shares">Shares</option>
+            <option value="saves">Saves</option>
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-label">Viral threshold</div>
+          <select id="selThreshold" class="sel">
+            <option value="1.25">1.25× avg (lenient)</option>
+            <option value="1.5" selected>1.5× avg (default)</option>
+            <option value="2">2× avg (strict)</option>
+            <option value="3">3× avg (elite)</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-label">Post type</div>
+          <select id="selType" class="sel">
+            <option value="all">All types</option>
+            <option value="video">Videos only</option>
+            <option value="image">Images only</option>
+            <option value="carousel">Carousels only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Date range toggle -->
+      <div class="toggle-row" style="margin-top:4px">
+        <div class="toggle-info">
+          <span class="toggle-label">Filter by date range</span>
+        </div>
+        <label class="toggle"><input type="checkbox" id="chkDateRange"><span class="toggle-track"></span></label>
+      </div>
+      <div id="dateRangePanel" style="display:none" class="date-panel">
+        <div class="ctrl"><div class="ctrl-label">From</div><input type="date" id="dateFrom" class="sel"></div>
+        <div class="ctrl"><div class="ctrl-label">To</div><input type="date" id="dateTo" class="sel"></div>
+      </div>
+
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <button class="btn-quick" id="btnQuick" title="Read what's already captured — no scrolling">
+          ⚡ Quick Read
+        </button>
+        <button class="btn-scan" style="margin-top:0;flex:1" id="btnScan">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <span id="btnScanTxt">Full Scan</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div id="progressBlock" style="display:none" class="progress-block">
+      <div class="pb-wrap"><div class="pb-fill" id="pbFill"></div></div>
+      <div class="pb-label" id="pbLabel">Starting…</div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="resultsBlock" style="display:none">
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-n" id="sTotal">—</div><div class="stat-l">Posts</div></div>
+        <div class="stat viral"><div class="stat-n" id="sViral">—</div><div class="stat-l">🔥 Viral</div></div>
+        <div class="stat"><div class="stat-n" id="sAvgLikes">—</div><div class="stat-l">Avg ❤</div></div>
+        <div class="stat"><div class="stat-n" id="sAvgViews">—</div><div class="stat-l">Avg ▶</div></div>
+        <div class="stat"><div class="stat-n" id="sAvgComments">—</div><div class="stat-l">Avg 💬</div></div>
+        <div class="stat"><div class="stat-n" id="sTopPost">—</div><div class="stat-l">Top ❤</div></div>
+      </div>
+
+      <!-- Action Row -->
+      <div class="action-row">
+        <button class="act-btn act-sort" id="btnSortGrid" title="Re-order profile grid by viral score">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M3 12h12M3 18h6"/></svg>
+          Sort Grid
+        </button>
+        <button class="act-btn act-dl-viral" id="btnDlViral">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          🔥 Viral
+        </button>
+        <button class="act-btn act-dl-all" id="btnDlAll">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          All
+        </button>
+        <div class="export-wrap">
+          <button class="act-btn act-export" id="btnExport">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Export ▾
+          </button>
+          <div class="export-menu" id="exportMenu" style="display:none">
+            <button class="emenu-item" id="expCSV">📊 CSV</button>
+            <button class="emenu-item" id="expJSON">{ } JSON</button>
+            <button class="emenu-item" id="expSheets">🟢 Google Sheets</button>
+            <button class="emenu-item" id="expExcel">🟦 Excel (.csv)</button>
+          </div>
+        </div>
+      </div>
+      <div class="action-row" style="margin-top:6px;">
+        <button class="act-btn" id="btnDlStories" style="width:100%;justify-content:center;background:rgba(124, 58, 237, 0.15);border-color:rgba(124, 58, 237, 0.3);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Download All Stories & Highlights
+        </button>
+      </div>
+
+      <!-- Download Options -->
+      <div class="dl-opts card" style="margin-bottom:8px">
+        <div class="card-label">Download Filters</div>
+        <div class="toggle-row">
+          <span class="toggle-label">Images</span>
+          <label class="toggle"><input type="checkbox" id="dlImages" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Videos / Reels</span>
+          <label class="toggle"><input type="checkbox" id="dlVideos" checked><span class="toggle-track"></span></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Carousels</span>
+          <label class="toggle"><input type="checkbox" id="dlCarousels" checked><span class="toggle-track"></span></label>
+        </div>
+      </div>
+
+      <!-- Post List Tabs -->
+      <div class="tab-bar">
+        <button class="tab active" id="tabAll">All</button>
+        <button class="tab" id="tabViral">🔥 Viral</button>
+        <button class="tab" id="tabVideo">Videos</button>
+        <button class="tab" id="tabImage">Images</button>
+      </div>
+
+      <!-- Post List -->
+      <div class="post-list" id="postList"></div>
+
+    </div>
+  </div>
+
+  <!-- DOWNLOAD OVERLAY -->
+  <div id="dlOverlay" class="dl-overlay" style="display:none">
+    <div class="dl-box">
+      <div class="dl-spin"></div>
+      <div class="dl-title" id="dlTitle">Downloading…</div>
+      <div class="dl-sub" id="dlSub">0 / 0</div>
+      <div class="pb-wrap" style="margin-top:10px"><div class="pb-fill" id="dlFill"></div></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+</div>
+<script src="popup.js"></script>
+</body>
+</html>

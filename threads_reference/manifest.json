@@ -1,0 +1,31 @@
+{
+   "action": {
+      "default_icon": "icons/icon_128.png",
+      "default_title": "__MSG_name__"
+   },
+   "background": {
+      "service_worker": "js/sw.js"
+   },
+   "content_scripts": [ {
+      "all_frames": true,
+      "css": [ "css/content.css" ],
+      "js": [ "js/cs.js" ],
+      "matches": [ "https://*.threads.com/*", "https://*.threads.net/*" ]
+   } ],
+   "default_locale": "en",
+   "description": "__MSG_description__",
+   "host_permissions": [ "https://www.threads.com/*", "https://i.instagram.com/*", "https://www.instagram.com/*", "https://*.cdninstagram.com/*", "https://*.fbcdn.net/*" ],
+   "icons": {
+      "128": "icons/icon_128.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj5vs/ERezEs+x4/i5kxlUFD/HieD7NRPJyNe6TRmY73SQb4cSabrQPU9cCR2TEA6P4mY2E2I7VxqtKzWejErHiG9/s4uR2qiZC+or5/g2ZtIyxyUVRi0oFsow+pDY491qRRHsKy+vtNWTawBH6YKK4u3LaJ8HSP9soSSjQYfm6asnOJjCkqFEXGPyZ2KkM7DQDZmTmGOV0HLNT+4UpvmjkToq8QAuJtdoBCXiUUZzGoQV0usOEmy79HcOknxUQbKgVGh+G+TFLH4OYyBXcBF0BPzsCk+YVoADHHVRp0hKLV1w5F5BAa1lmEVFjKUC4ooVYyJq3EcYZlBLMAiz1eaNwIDAQAB",
+   "manifest_version": 3,
+   "name": "__MSG_name__",
+   "options_ui": {
+      "open_in_tab": false,
+      "page": "/html/options.html"
+   },
+   "permissions": [ "downloads", "declarativeNetRequestWithHostAccess", "cookies", "storage", "webRequest", "tabs" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.1.5"
+}

@@ -1,0 +1,11 @@
+{
+   "btn_title": {
+      "message": "Download"
+   },
+   "description": {
+      "message": "Herramienta para descargar fotos y videos desde Threads. Guarda contenido con un clic, sin salir de la página"
+   },
+   "name": {
+      "message": "Herramienta Threads – Descargar imágenes y videos"
+   }
+}

@@ -1,0 +1,11 @@
+{
+   "btn_title": {
+      "message": "Download"
+   },
+   "description": {
+      "message": "Threadsの動画、写真、カルーセル投稿、プロフィールメディアを高画質でダウンロード。日付や件数で動画・画像を一括保存"
+   },
+   "name": {
+      "message": "Threads Downloader - 動画・写真をダウンロード"
+   }
+}

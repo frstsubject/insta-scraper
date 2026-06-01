@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "Viral Scraper",
+  "description": "Scrape Instagram, TikTok & Threads — viral detection, sort grid, bulk download, CSV/JSON export.",
+  "version": "2.1.1",
+  "permissions": ["activeTab","scripting","storage","downloads","tabs","clipboardWrite","declarativeNetRequestWithHostAccess","webRequest","cookies"],
+  "host_permissions": [
+    "https://www.instagram.com/*",
+    "https://i.instagram.com/*",
+    "https://www.tiktok.com/*",
+    "https://www.threads.net/*",
+    "https://www.threads.com/*"
+  ],
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.instagram.com/*"],
+      "js": ["content_ig.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://www.tiktok.com/*"],
+      "js": ["content_tt.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://www.threads.net/*", "https://www.threads.com/*"],
+      "css": ["threads_reference/css/content.css"],
+      "js": ["content_th.js", "threads_reference/js/cs.js"]
+    },
+    {
+      "matches": [
+        "https://www.instagram.com/*",
+        "https://www.tiktok.com/*",
+        "https://www.threads.net/*",
+        "https://www.threads.com/*"
+      ],
+      "js": ["content_bridge.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "web_accessible_resources": [{
+    "resources": ["icons/*"],
+    "matches": [
+      "https://www.instagram.com/*",
+      "https://www.tiktok.com/*",
+      "https://www.threads.net/*",
+      "https://www.threads.com/*"
+    ]
+  }]
+}

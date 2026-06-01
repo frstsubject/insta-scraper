@@ -1,0 +1,11 @@
+{
+   "btn_title": {
+      "message": "Download"
+   },
+   "description": {
+      "message": "Threads 동영상, 사진, 캐러셀 게시물과 프로필 미디어를 고화질로 다운로드하세요. 날짜나 개수 기준으로 동영상 또는 이미지를 일괄 저장"
+   },
+   "name": {
+      "message": "Threads Downloader - 동영상 및 사진 다운로드"
+   }
+}
