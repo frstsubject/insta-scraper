@@ -526,6 +526,7 @@
     const newPath = location.pathname;
     if (newPath === _lastNavPath) return;
     _lastNavPath = newPath;
+    _intervalLastCount = 0; // reset so bar re-injects on new page
     // Remove stale bar
     const bar = document.getElementById('vs-dl-bar');
     if (bar) bar.remove();
@@ -824,14 +825,15 @@
   });
 
   // ── Background auto-inject loop (fires every 2.5s while on a profile) ─────
-  // Fixed: now works on /username/ AND /username/reels/ AND /username/tagged/
+  // Works on /username/ AND /username/reels/ AND /username/tagged/
   let _intervalPending = false;
+  let _intervalLastCount = 0;
 
   setInterval(() => {
     if (!isIG && !isTH) return;
     if (_intervalPending) return;
 
-    if (!isProfilePage()) return; // ← THE FIX: unified check handles all sub-tabs
+    if (!isProfilePage()) return;
 
     _intervalPending = true;
     const recvType = isIG ? 'VS_IG_READ_RESULT' : 'VS_TH_READ_RESULT';
@@ -846,6 +848,11 @@
       if (!posts.length) return;
       const enriched = enrichPosts(posts);
       injectOverlays(enriched, plat);
+      // Also refresh the download bar when new posts are discovered (e.g. on reels tab scroll)
+      if (posts.length !== _intervalLastCount) {
+        _intervalLastCount = posts.length;
+        injectDownloadBar(enriched, plat);
+      }
     };
 
     window.addEventListener('message', onMsg);
