@@ -1,0 +1,87 @@
+/* threads_reference/css/content.css
+   Threads-specific UI styles injected by the content script.
+   Complements the inline styles in content_bridge.js for the
+   Threads bulk-download button and progress overlay. */
+
+/* ── Bulk-download button injected into the Threads profile header ── */
+#vs-th-bulk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #f43f8e);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(244, 63, 142, 0.35);
+  margin-left: 8px;
+  vertical-align: middle;
+  z-index: 10000;
+  transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+#vs-th-bulk-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(244, 63, 142, 0.45);
+}
+
+#vs-th-bulk-btn:active {
+  transform: translateY(0);
+}
+
+#vs-th-bulk-btn.busy {
+  background: rgba(217, 119, 6, 0.85);
+  border-color: rgba(251, 191, 36, 0.5);
+  cursor: wait;
+}
+
+#vs-th-bulk-btn.busy:hover {
+  transform: none;
+}
+
+/* ── Progress overlay (bottom-right corner) ── */
+#vs-progress-overlay {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 320px;
+  padding: 18px;
+  background: rgba(20, 20, 20, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #fff;
+  z-index: 2147483647;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#vs-progress-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── General Threads grid normalisation ── */
+/* Ensures the flex/grid reorder applied by __vs_th_sortGrid renders
+   correctly regardless of the Threads page theme. */
+[data-vs-grid-root] {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+}
+
+[data-vs-grid-cell] {
+  box-sizing: border-box !important;
+  flex: 0 0 calc(33.333% - 3px) !important;
+  max-width: calc(33.333% - 3px) !important;
+  margin: 1px !important;
+}
