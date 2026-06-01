@@ -335,6 +335,32 @@ function wireUI() {
   });
 }
 
+// ── Wake the service worker before sending messages to it ────
+// MV3 SWs can be killed at any time. Opening a port wakes it instantly.
+// We also send a message ping as a belt-and-suspenders fallback.
+let _swPort = null;
+
+function wakeSW() {
+  return new Promise((resolve) => {
+    // Open a long-lived port to hold the SW awake during the scan
+    try {
+      if (_swPort) { try { _swPort.disconnect(); } catch (_) {} }
+      _swPort = chrome.runtime.connect({ name: 'vs-keepalive' });
+      _swPort.onDisconnect.addListener(() => { _swPort = null; });
+    } catch (_) {}
+
+    // Ping to confirm it's responding
+    chrome.runtime.sendMessage({ action: 'SW_PING' }, () => {
+      if (chrome.runtime.lastError) {
+        // SW was dead — it restarted on the connect above; give it 400ms
+        setTimeout(resolve, 400);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 // ── SCAN ──────────────────────────────────────────────────────
 async function startScan() {
   if (S.scanning) return;
@@ -347,10 +373,8 @@ async function startScan() {
   $('resultsBlock').style.display  = 'none';
   setPb(5, 'Connecting…');
 
-  // Start SW keepalive to prevent it being killed during long scans
-  chrome.runtime.sendMessage({ action: 'SCAN_KEEPALIVE_START' }, () => {
-    if (chrome.runtime.lastError) {} // SW may not be up yet, that's fine
-  });
+  // Wake the service worker FIRST — avoids "No SW" / dead-SW errors
+  await wakeSW();
 
   const count      = parseInt($('selCount').value, 10);
   const sortBy     = $('selSortBy').value;
@@ -393,7 +417,26 @@ async function startScan() {
       });
     });
 
-    if (!result?.ok || !result.posts?.length) throw new Error('No posts captured. Make sure you\'re on a profile page.');
+    // If API intercept returned nothing (common on reels tab first load),
+    // fall back to a Quick Read which uses the already-intercepted data
+    // plus the DOM fallback, then show a helpful hint.
+    if (!result?.ok || !result.posts?.length) {
+      setPb(90, 'Trying quick read fallback…');
+      const qResult = await new Promise((resolve) => {
+        chrome.tabs.sendMessage(S.tabId, { action: 'QUICK_READ' }, (r) => {
+          if (chrome.runtime.lastError) { resolve(null); return; }
+          resolve(r);
+        });
+      });
+      if (qResult?.posts?.length) {
+        // We got posts from the fallback — use them but warn the user
+        toast('Tip: scroll the reels tab first for better results', '');
+        result.posts = qResult.posts;
+        result.ok = true;
+      } else {
+        throw new Error('No posts captured. On the reels tab, scroll down a bit first then scan again.');
+      }
+    }
 
     const processed = processRawPosts(result.posts, { count, sortBy, threshold, typeFilter, dateFrom, dateTo });
     S.posts = (processed.posts || []).filter(p => p != null);
@@ -424,7 +467,8 @@ async function startScan() {
     btn.disabled = false;
     $('btnScanTxt').textContent = 'Full Scan';
     setStatus(S.platform === 'ig' ? 'Instagram' : (S.platform === 'tt' ? 'TikTok' : 'Threads'), S.platform);
-    // Stop keepalive
+    // Stop keepalive port + message
+    try { if (_swPort) { _swPort.disconnect(); _swPort = null; } } catch (_) {}
     chrome.runtime.sendMessage({ action: 'SCAN_KEEPALIVE_STOP' }, () => {
       if (chrome.runtime.lastError) {}
     });
@@ -603,6 +647,7 @@ async function quickRead() {
   $('btnQuick').disabled = true;
   setStatus('Reading…', 'scanning');
   try {
+    await wakeSW();
     await chrome.scripting.executeScript({ target: { tabId: S.tabId }, files: ['content_bridge.js'] }).catch(() => {});
 
     const result = await new Promise((res, rej) => {
